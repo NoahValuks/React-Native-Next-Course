@@ -11,8 +11,19 @@ const moodOptions: MoodOptionType[] = [
   { emoji: '😤', description: 'frustrated' },
 ];
 
-export const MoodPicker: React.FC = () => {
+type MoodPickerProps = {
+  handleSelectMood: (moodOption: MoodOptionType) => void;
+};
+
+export const MoodPicker: React.FC<MoodPickerProps> = ({ handleSelectMood }) => {
   const [selectedMood, setSelectedMood] = React.useState<MoodOptionType>();
+
+  const handleSelect = React.useCallback(() => {
+    if (selectedMood) {
+      handleSelectMood(selectedMood);
+      setSelectedMood(undefined);
+    }
+  }, [handleSelectMood, selectedMood]);
 
   return (
     <View style={styles.container}>
@@ -39,7 +50,11 @@ export const MoodPicker: React.FC = () => {
         ))}
       </View>
       <View>
-        <Pressable style={styles.button}>
+        <Pressable
+          style={styles.button}
+          onPress={() => {
+            handleSelect();
+          }}>
           <Text style={styles.buttonText}>Choose</Text>
         </Pressable>
       </View>
@@ -52,12 +67,14 @@ const styles = StyleSheet.create({
     color: theme.colorPurple,
     fontWeight: 'bold',
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 20,
+    marginBottom: 15,
   },
   container: {
     borderColor: theme.colorPurple,
     borderWidth: 2,
     borderRadius: 15,
+    padding: 15,
   },
   moodOptions: {
     flexDirection: 'row',
@@ -71,19 +88,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedMoodItem: {
-    backgroundColor: '#454C73',
-    borderColor: 'white',
+    backgroundColor: theme.colorPurple,
+    borderColor: theme.colorWhite,
     borderWidth: 2,
   },
   descriptionText: {
-    color: '#454C73',
+    color: theme.colorPurple,
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 10,
   },
+  button: {
+    borderRadius: 20,
+    alignSelf: 'center',
+    width: 125,
+    paddingVertical: 10,
+    marginTop: 15,
+    backgroundColor: theme.colorPurple,
+  },
   buttonText: {
     color: theme.colorWhite,
-    backgroundColor: theme.colorPurple,
     textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
